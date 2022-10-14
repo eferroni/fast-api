@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from enum import Enum
 
 from books_constants import BOOKS
-from books_presenter import BookDTO, BookDataDict, CreateBookUseCase, BookPreseter
+from books_presenter import BookDTO, BookDataDict, CreateBookUseCase, BookPresenter, GetBookUseCase
 
 app = FastAPI()
 
@@ -41,9 +41,13 @@ async def read_favorite_book():
     return {"book_title": "My Favorite one"}
 
 
-@app.get("/{book_name}")
-async def fetch_book(book_name: str):
-    return BOOKS[book_name]
+@app.get("/{book_id}")
+async def fetch_book(book_id: str):
+    input_dto = BookDTO("", "", book_id)
+    book_data = BookDataDict()
+    output_dto = GetBookUseCase(input_dto, book_data).get()
+    json_result = BookPresenter(output_dto).to_json()
+    return json_result
 
 
 @app.get("/book/")
@@ -56,7 +60,7 @@ async def create_book(book_title: str, book_author: str):
     input_dto = BookDTO(book_title, book_author)
     book_data = BookDataDict()
     output_dto = CreateBookUseCase(input_dto, book_data).create()
-    json_result = BookPreseter(output_dto).to_json()
+    json_result = BookPresenter(output_dto).to_json()
     return json_result
 
 
