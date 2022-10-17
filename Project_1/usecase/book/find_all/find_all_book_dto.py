@@ -1,4 +1,8 @@
-from typing import TypedDict
+from typing import TypedDict, Optional
+
+
+class InputFindAllBookDto(TypedDict):
+    id: Optional[str]
 
 
 class OutputFindAllBookDto(TypedDict):

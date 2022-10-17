@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI
 from infrastructure.book.repository.dict.book_repository import BookRepositoryDict
 from usecase.book.create.create_book_dto import InputCreateBookDto, OutputCreateBookDto
@@ -41,25 +42,17 @@ app = FastAPI()
 #     return {"Direction": direction_name, "sub": "Right"}
 
 
-# @app.get("/books/mybook")
-# async def read_favorite_book():
-#     return {"book_title": "My Favorite one"}
-
-# @app.get("/book/")
-# async def fetch_book_with_query_params(book_name: str):
-#     return BOOKS[book_name]
-#
-#
-
-
-@app.get("/book/")
-async def find_all_books():
+@app.get("/books/")
+async def find_all_books(book_id: Optional[str] = None):
+    input_dto = {}
+    if book_id:
+        input_dto['id'] = book_id
     book_repository = BookRepositoryDict()
-    output_dto: OutputFindAllBookDto = FindAllBookUseCase(book_repository).execute()
+    output_dto: OutputFindAllBookDto = FindAllBookUseCase(book_repository).execute(input_dto)
     return output_dto
 
 
-@app.get("/book/{book_id}")
+@app.get("/books/{book_id}")
 async def find_book(book_id: str):
     input_dto: InputFindBookDto = {"id": book_id}
     book_repository = BookRepositoryDict()
@@ -67,7 +60,7 @@ async def find_book(book_id: str):
     return output_dto
 
 
-@app.post("/book/")
+@app.post("/books/")
 async def create_book(book_title: str, book_author: str):
     input_dto: InputCreateBookDto = {"title": book_title, "author": book_author}
     book_repository = BookRepositoryDict()
@@ -75,7 +68,7 @@ async def create_book(book_title: str, book_author: str):
     return output_dto
 
 
-@app.put("/book/{book_id}")
+@app.put("/books/{book_id}")
 async def update_book(book_id: str, book_title: str, book_author: str):
     input_dto: InputUpdateBookDto = {"id": book_id, "title": book_title, "author": book_author}
     book_repository = BookRepositoryDict()
@@ -83,7 +76,7 @@ async def update_book(book_id: str, book_title: str, book_author: str):
     return output_dto
 
 
-@app.delete("/book/{book_id}")
+@app.delete("/books/{book_id}")
 async def delete_book(book_id: str):
     input_dto: InputDeleteBookDto = {"id": book_id}
     book_repository = BookRepositoryDict()
