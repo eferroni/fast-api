@@ -5,7 +5,7 @@ from infrastructure.book.repository.dict.book_dictionary import BOOKS
 
 class BookRepositoryDict(BookRepositoryInterface):
     def find(self, book_id: str) -> Book:
-        book_item = BOOKS[id]
+        book_item = BOOKS[book_id]
         book = Book(book_id, book_item['title'], book_item['author'])
         return book
 
