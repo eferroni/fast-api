@@ -4,9 +4,9 @@ from infrastructure.book.repository.dict.book_dictionary import BOOKS
 
 
 class BookRepositoryDict(BookRepositoryInterface):
-    def find(self, id: str) -> Book:
+    def find(self, book_id: str) -> Book:
         book_item = BOOKS[id]
-        book = Book(id, book_item['title'], book_item['author'])
+        book = Book(book_id, book_item['title'], book_item['author'])
         return book
 
     def find_all(self) -> list[Book]:
