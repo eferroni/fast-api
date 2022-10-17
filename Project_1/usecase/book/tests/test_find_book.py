@@ -4,7 +4,7 @@ from usecase.book.find.find_book_usecase import FindBookUseCase
 from fastapi import HTTPException
 
 
-def test_find_book_usecase():
+def test_should_find_a_book():
     input_dto: InputFindBookDto = {"id": "book_1"}
     book_repository = BookRepositoryDict()
     output_dto: OutputFindBookDto = FindBookUseCase(book_repository).execute(input_dto)
@@ -15,11 +15,12 @@ def test_find_book_usecase():
     }
 
 
-def test_find_book_usecase_not_found():
+def test_should_not_find_a_book():
     try:
         input_dto: InputFindBookDto = {"id": "invalid_id"}
         book_repository = BookRepositoryDict()
         FindBookUseCase(book_repository).execute(input_dto)
         assert False
-    except HTTPException:
-        assert True
+    except HTTPException as e:
+        assert e.status_code == 404
+        assert e.detail == "Book not found"
