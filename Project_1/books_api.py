@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, status, HTTPException
 from infrastructure.book.repository.dict.book_repository import BookRepositoryDict
 from usecase.book.create.create_book_dto import InputCreateBookDto, OutputCreateBookDto
 from usecase.book.create.create_book_usecase import CreateBookUseCase
@@ -58,13 +58,21 @@ async def find_all_books(book_id: Optional[str] = None):
 
 @app.get("/books/{book_id}")
 async def find_book(book_id: str):
-    input_dto: InputFindBookDto = {"id": book_id}
-    book_repository = BookRepositoryDict()
-    output_dto: OutputFindBookDto = FindBookUseCase(book_repository).execute(input_dto)
-    return output_dto
+    try:
+        input_dto: InputFindBookDto = {"id": book_id}
+        book_repository = BookRepositoryDict()
+        output_dto: OutputFindBookDto = FindBookUseCase(book_repository).execute(input_dto)
+        return output_dto
+
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code,
+                            detail=e.detail)
+    except Exception:
+        raise HTTPException(status_code=500,
+                            detail="Something wrong occur :(")
 
 
-@app.post("/books/")
+@app.post("/books/", status_code=status.HTTP_201_CREATED)
 async def create_book(book: BookBaseModel):
     input_dto: InputCreateBookDto = {"title": book.title, "author": book.author}
     book_repository = BookRepositoryDict()
@@ -74,15 +82,29 @@ async def create_book(book: BookBaseModel):
 
 @app.put("/books/{book_id}")
 async def update_book(book_id: str, book: BookBaseModel):
-    input_dto: InputUpdateBookDto = {"id": book_id, "title": book.title, "author": book.author}
-    book_repository = BookRepositoryDict()
-    output_dto: OutputUpdateBookDto = UpdateBookUseCase(book_repository).execute(input_dto)
-    return output_dto
+    try:
+        input_dto: InputUpdateBookDto = {"id": book_id, "title": book.title, "author": book.author}
+        book_repository = BookRepositoryDict()
+        output_dto: OutputUpdateBookDto = UpdateBookUseCase(book_repository).execute(input_dto)
+        return output_dto
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code,
+                            detail=e.detail)
+    except Exception:
+        raise HTTPException(status_code=500,
+                            detail="Something wrong occur :(")
 
 
 @app.delete("/books/{book_id}")
 async def delete_book(book_id: str):
-    input_dto: InputDeleteBookDto = {"id": book_id}
-    book_repository = BookRepositoryDict()
-    output_dto: OutputDeleteBookDto = DeleteBookUseCase(book_repository).execute(input_dto)
-    return output_dto
+    try:
+        input_dto: InputDeleteBookDto = {"id": book_id}
+        book_repository = BookRepositoryDict()
+        output_dto: OutputDeleteBookDto = DeleteBookUseCase(book_repository).execute(input_dto)
+        return output_dto
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code,
+                            detail=e.detail)
+    except Exception:
+        raise HTTPException(status_code=500,
+                            detail="Something wrong occur :(")

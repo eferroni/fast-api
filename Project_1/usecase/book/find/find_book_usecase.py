@@ -8,13 +8,9 @@ class FindBookUseCase:
         self.repository = repository
 
     def execute(self, input_dto: InputFindBookDto) -> OutputFindBookDto:
-        try:
-            book = self.repository.find(input_dto['id'])
-            return {
-                "id": book.id,
-                "title": book.title,
-                "author": book.author
-            }
-        except KeyError:
-            raise HTTPException(status_code=404,
-                                detail="Book not found")
+        book = self.repository.find(input_dto['id'])
+        return {
+            "id": book.id,
+            "title": book.title,
+            "author": book.author
+        }
