@@ -11,7 +11,8 @@ from usecase.book.find_all.find_all_book_dto import OutputFindAllBookDto
 from usecase.book.find_all.find_all_book_usecase import FindAllBookUseCase
 from usecase.book.update.update_book_dto import InputUpdateBookDto, OutputUpdateBookDto
 from usecase.book.update.update_book_usecase import UpdateBookUseCase
-from pydantic import BaseModel, Field
+from domain.book.validator.create_book_validator import CreateBookValidator
+from domain.book.validator.update_book_validator import UpdateBookValidator
 
 app = FastAPI()
 
@@ -31,19 +32,6 @@ app = FastAPI()
 #     if direction_name == DirectionName.west:
 #         return {"Direction": direction_name, "sub": "Left"}
 #     return {"Direction": direction_name, "sub": "Right"}
-
-
-class BookBaseModel(BaseModel):
-    title: str = Field(min_length=1, max_length=100)
-    author: str = Field(min_length=1, max_length=100)
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "title": "Computer Science Pro",
-                "author": "Eduardo",
-            }
-        }
 
 
 @app.get("/books/")
@@ -73,7 +61,7 @@ async def find_book(book_id: str):
 
 
 @app.post("/books/", status_code=status.HTTP_201_CREATED)
-async def create_book(book: BookBaseModel):
+async def create_book(book: CreateBookValidator):
     input_dto: InputCreateBookDto = {"title": book.title, "author": book.author}
     book_repository = BookRepositoryDict()
     output_dto: OutputCreateBookDto = CreateBookUseCase(book_repository).execute(input_dto)
@@ -81,7 +69,7 @@ async def create_book(book: BookBaseModel):
 
 
 @app.put("/books/{book_id}")
-async def update_book(book_id: str, book: BookBaseModel):
+async def update_book(book_id: str, book: UpdateBookValidator):
     try:
         input_dto: InputUpdateBookDto = {"id": book_id, "title": book.title, "author": book.author}
         book_repository = BookRepositoryDict()
