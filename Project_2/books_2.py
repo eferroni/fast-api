@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Form, Header
 from pydantic import BaseModel, Field
 from uuid import UUID
 from typing import Optional
@@ -52,6 +52,30 @@ def negative_number_exception_handler(request: Request, exception: NegativeNumbe
         status_code=418,
         content={"message": f"negative number"}
     )
+
+
+@app.post("/books/login")
+def book_login(username: str = Form(), password: str = Form()):
+    return {
+        "username": username,
+        "password": password
+    }
+
+
+@app.post("/books/login_header/")
+def book_login_header(book_id: UUID, username: str = Header(), password: str = Header()):
+    if username == 'FastAPIUser' and password == 'test1234!':
+        for book in BOOKS:
+            if book.id == book_id:
+                return book
+        raise raise_item_cannot_be_found_exception()
+    raise HTTPException(status_code=403,
+                        detail="User not found")
+
+
+@app.get("/header")
+def read_header(random_header: Optional[str] = Header(None)):
+    return {"random-header": random_header}
 
 
 @app.get("/")
