@@ -11,8 +11,8 @@ from usecase.book.find_all.find_all_book_dto import OutputFindAllBookDto
 from usecase.book.find_all.find_all_book_usecase import FindAllBookUseCase
 from usecase.book.update.update_book_dto import InputUpdateBookDto, OutputUpdateBookDto
 from usecase.book.update.update_book_usecase import UpdateBookUseCase
-from domain.book.validator.create_book_validator import CreateBookValidator
-from domain.book.validator.update_book_validator import UpdateBookValidator
+from infrastructure.api.validator.create_book_validator import CreateBookValidator
+from infrastructure.api.validator.update_book_validator import UpdateBookValidator
 
 app = FastAPI()
 
