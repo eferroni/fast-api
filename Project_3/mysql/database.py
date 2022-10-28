@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-POSTGRESQL_PASSWORD = config('SQLITE3_PASSWORD')
+MYSQL_PASSWORD = config('MYSQL_PASSWORD')
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{POSTGRESQL_PASSWORD}@localhost/TodoApplicationDatabase"
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://root:{MYSQL_PASSWORD}@localhost:3306/todoapp"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

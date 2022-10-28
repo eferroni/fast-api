@@ -5,7 +5,8 @@ from fastapi import FastAPI, Depends, status
 
 import models
 # from sqlite.database import engine, SessionLocal
-from postgres.database import engine, SessionLocal
+# from postgres.database import engine, SessionLocal
+from mysql.database import engine, SessionLocal
 from exceptions.todo_exceptions import TodoNotFoundException
 from auth import get_current_user
 from exceptions.user_exceptions import UserNotFoundException

@@ -17,17 +17,17 @@ class Book:
     def title(self):
         return self._title
 
-    @title.setter
-    def title(self, new_title: str):
+    def change_title(self, new_title: str):
         self._title = new_title
+        self.validate()
 
     @property
     def author(self):
         return self._author
 
-    @author.setter
-    def author(self, new_author: str):
+    def change_author(self, new_author: str):
         self._author = new_author
+        self.validate()
 
     def validate(self):
         if self._id == "":

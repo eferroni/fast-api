@@ -36,12 +36,17 @@ app = FastAPI()
 
 @app.get("/books/")
 async def find_all_books(book_id: Optional[str] = None):
-    input_dto = {}
-    if book_id:
-        input_dto['id'] = book_id
-    book_repository = BookRepositoryDict()
-    output_dto: list[OutputFindAllBookDto] = FindAllBookUseCase(book_repository).execute(input_dto)
-    return output_dto
+    try:
+        input_dto = {}
+        if book_id:
+            input_dto['id'] = book_id
+        book_repository = BookRepositoryDict()
+        use_case = FindAllBookUseCase(book_repository)
+        output_dto: list[OutputFindAllBookDto] = use_case.execute(input_dto)
+        return output_dto
+    except Exception:
+        raise HTTPException(status_code=500,
+                            detail="Something went wrong :(")
 
 
 @app.get("/books/{book_id}")
@@ -52,20 +57,27 @@ async def find_book(book_id: str):
         output_dto: OutputFindBookDto = FindBookUseCase(book_repository).execute(input_dto)
         return output_dto
 
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code,
-                            detail=e.detail)
+    except KeyError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=e)
     except Exception:
-        raise HTTPException(status_code=500,
-                            detail="Something wrong occur :(")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Something went wrong :(")
 
 
 @app.post("/books/", status_code=status.HTTP_201_CREATED)
 async def create_book(book: CreateBookValidator):
-    input_dto: InputCreateBookDto = {"title": book.title, "author": book.author}
-    book_repository = BookRepositoryDict()
-    output_dto: OutputCreateBookDto = CreateBookUseCase(book_repository).execute(input_dto)
-    return output_dto
+    try:
+        input_dto: InputCreateBookDto = {"title": book.title, "author": book.author}
+        book_repository = BookRepositoryDict()
+        output_dto: OutputCreateBookDto = CreateBookUseCase(book_repository).execute(input_dto)
+        return output_dto
+    except KeyError as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail=e)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Something went wrong :(")
 
 
 @app.put("/books/{book_id}")
@@ -75,12 +87,12 @@ async def update_book(book_id: str, book: UpdateBookValidator):
         book_repository = BookRepositoryDict()
         output_dto: OutputUpdateBookDto = UpdateBookUseCase(book_repository).execute(input_dto)
         return output_dto
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code,
-                            detail=e.detail)
+    except KeyError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=e)
     except Exception:
-        raise HTTPException(status_code=500,
-                            detail="Something wrong occur :(")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Something went wrong :(")
 
 
 @app.delete("/books/{book_id}")
@@ -90,9 +102,9 @@ async def delete_book(book_id: str):
         book_repository = BookRepositoryDict()
         output_dto: OutputDeleteBookDto = DeleteBookUseCase(book_repository).execute(input_dto)
         return output_dto
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code,
-                            detail=e.detail)
+    except KeyError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=e)
     except Exception:
-        raise HTTPException(status_code=500,
-                            detail="Something wrong occur :(")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Something went wrong :(")

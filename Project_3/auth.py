@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 import models
 # from sqlite.database import SessionLocal, engine
-from postgres.database import SessionLocal, engine
+# from postgres.database import SessionLocal, engine
+from mysql.database import SessionLocal, engine
 from exceptions.user_exceptions import UserNotFoundException
 from exceptions.auth_exceptions import AuthUnauthorizedException, AuthTokenException
 
