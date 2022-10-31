@@ -5,3 +5,4 @@ SQLAlchemy==1.4.42
 pymysql
 python-decouple
 psycopg2-binary
+alembic

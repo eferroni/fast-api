@@ -4,9 +4,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-POSTGRESQL_PASSWORD = config('SQLITE3_PASSWORD')
+DB_SERVICE = config('DB_SERVICE')
+DB_USER = config('DB_USER')
+DB_PASS = config('DB_PASS')
+DB_HOST = config('DB_HOST')
+DB_NAME = config('DB_NAME')
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{POSTGRESQL_PASSWORD}@localhost/TodoApplicationDatabase"
+SQLALCHEMY_DATABASE_URL = f"{DB_SERVICE}://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

@@ -4,9 +4,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-MYSQL_PASSWORD = config('MYSQL_PASSWORD')
 
-SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://root:{MYSQL_PASSWORD}@localhost:3306/todoapp"
+DB_SERVICE = config('DB_SERVICE')
+DB_USER = config('DB_USER')
+DB_PASS = config('DB_PASS')
+DB_HOST = config('DB_HOST')
+DB_NAME = config('DB_NAME')
+
+SQLALCHEMY_DATABASE_URL = f"{DB_SERVICE}://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
