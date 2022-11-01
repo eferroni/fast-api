@@ -4,11 +4,11 @@ from domain.book.entity.book import Book
 
 class BookRepositoryInterface(ABC):
     @abstractmethod
-    def find(self, id: str) -> Book:
+    def find(self, book_id: str) -> Book:
         pass
 
     @abstractmethod
-    def find_all(self) -> list[Book]:
+    def find_all(self, book_id: str = None) -> list[Book]:
         pass
 
     @abstractmethod

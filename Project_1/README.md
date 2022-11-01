@@ -1,5 +1,5 @@
 run:
-uvicorn infrastructure/api/book:app --reload
+uvicorn infrastructure.api.main:app --reload
 
 access swagger:
 http://localhost:8000/docs#/

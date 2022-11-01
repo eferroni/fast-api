@@ -8,17 +8,13 @@ class FindAllBookUseCase:
 
     def execute(self, input_dto: InputFindAllBookDto) -> list[OutputFindAllBookDto]:
         output = list()
-        book_list = self.repository.find_all()
+        book_list = self.repository.find_all(input_dto.get("id", None))
         for book_item in book_list:
-            append = True
-            if 'id' in input_dto and input_dto['id'] not in book_item.id:
-                append = False
-            if append is True:
-                output.append(
-                    {
-                        "id": book_item.id,
-                        "title": book_item.title,
-                        "author": book_item.author
-                    }
-                )
+            output.append(
+                {
+                    "id": book_item.id,
+                    "title": book_item.title,
+                    "author": book_item.author
+                }
+            )
         return output
