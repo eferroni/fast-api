@@ -45,7 +45,7 @@ class BookRepositoryPostgres(BookRepositoryInterface):
         if book_id is None:
             self.cursor.execute("SELECT * FROM books")
         else:
-            self.cursor.execute("SELECT * FROM books WHERE id = ?", (book_id,))
+            self.cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
         books = self.cursor.fetchall()
         book_list = list()
         for book_item in books:
