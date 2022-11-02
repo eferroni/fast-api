@@ -19,14 +19,16 @@ from infrastructure.api.validator.update_book_validator import UpdateBookValidat
 
 from infrastructure.book.repository.dict.book_repository import BookRepositoryDict
 from infrastructure.book.repository.sqlite.book_repository import BookRepositorySqlite
+from infrastructure.book.repository.postgres.book_repository import BookRepositoryPostgres
 
 load_dotenv()
 REPOSITORY = os.environ.get("REPOSITORY")
 if REPOSITORY == 'sqlite':
     book_repository = BookRepositorySqlite()
+elif REPOSITORY == 'postgres':
+    book_repository = BookRepositoryPostgres()
 elif REPOSITORY == 'dict':
     book_repository = BookRepositoryDict()
-
 
 router = APIRouter(prefix="/books", tags=["books"])
 

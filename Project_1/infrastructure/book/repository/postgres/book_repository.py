@@ -1,5 +1,5 @@
 import os
-import sqlite3
+import psycopg2
 from dotenv import load_dotenv
 
 from domain.book.entity.book import Book
@@ -8,12 +8,14 @@ from domain.book.exceptions.book_exceptions import BookNotFound, BookIdAlreadyEx
 
 load_dotenv()
 
-DB_NAME = os.environ.get("SQLITE_DB_NAME")
+DB_NAME = os.environ.get("POSTGRES_DB_NAME")
+DB_USER = os.environ.get("POSTGRES_DB_USER")
+DB_PASS = os.environ.get("POSTGRES_DB_PASS")
 
 
-class BookRepositorySqlite(BookRepositoryInterface):
+class BookRepositoryPostgres(BookRepositoryInterface):
     def __init__(self):
-        self.conn = sqlite3.connect(DB_NAME)
+        self.conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS)
         self.cursor = self.conn.cursor()
         self._create_books_table()
 
@@ -32,7 +34,7 @@ class BookRepositorySqlite(BookRepositoryInterface):
         );""")
 
     def find(self, book_id: str) -> Book:
-        self.cursor.execute("SELECT * FROM books WHERE id = ?", (book_id,))
+        self.cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
         book_item = self.cursor.fetchone()
         if book_item is None:
             raise BookNotFound
@@ -53,17 +55,17 @@ class BookRepositorySqlite(BookRepositoryInterface):
 
     def create(self, book: Book) -> None:
         try:
-            self.cursor.execute("INSERT INTO books (id, title, author) VALUES (?, ?, ?)",
+            self.cursor.execute("INSERT INTO books (id, title, author) VALUES (%s, %s, %s)",
                                 (book.id, book.title, book.author))
             self.commit()
-        except sqlite3.IntegrityError:
+        except psycopg2.IntegrityError:
             raise BookIdAlreadyExist
 
     def update(self, book: Book) -> None:
-        self.cursor.execute("UPDATE books set title = ?, author = ? WHERE id = ?",
+        self.cursor.execute("UPDATE books set title = %s, author = %s WHERE id = %s",
                             (book.title, book.author, book.id))
         self.commit()
 
     def delete(self, book: Book) -> None:
-        self.cursor.execute("DELETE FROM books WHERE id = ?", (book.id,))
+        self.cursor.execute("DELETE FROM books WHERE id = %s", (book.id,))
         self.commit()

@@ -4,3 +4,4 @@ uvicorn==0.18.3
 pydantic~=1.10.2
 SQLAlchemy
 python-dotenv
+psycopg2
