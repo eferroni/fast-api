@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String
-from infrastructure.book.repository.sqlite.database import Base
+from infrastructure.__shared__.repository.postgres.database import Base, engine
 
 
 class Books(Base):
@@ -9,3 +9,5 @@ class Books(Base):
     title = Column(String)
     author = Column(String)
 
+
+Base.metadata.create_all(engine)
