@@ -9,5 +9,8 @@ class Books(Base):
     title = Column(String)
     author = Column(String)
 
+    def __repr__(self):
+        return f"Book(id={self.id}, title={self.title})"
+
 
 Base.metadata.create_all(engine)
