@@ -7,5 +7,6 @@ class InputLoginUserDto(TypedDict):
 
 
 class OutputLoginUserDto(TypedDict):
-    token: str
+    access_token: str
+    token_type: str
 

@@ -1,20 +1,29 @@
-class UserNotFound(KeyError):
-    pass
-
-
-class UserAlreadyExist(KeyError):
-    def __init__(self, message=""):
+class UserException(Exception):
+    def __init__(self, message="User exception", status=400):
+        super().__init__(message, status)
         self.message = message
-        super().__init__(self.message)
+        self.status = status
 
 
-class UserValueError(ValueError):
-    def __init__(self, message=""):
-        self.message = message
-        super().__init__(self.message)
+class UserNotFound(UserException):
+    def __init__(self, message="User not found"):
+        self.status = 404
+        super().__init__(message, self.status)
 
 
-class PasswordPolicy(ValueError):
-    def __init__(self, message="Password must be between 8 and 16 character, and must have at least one lower character, one upper character e one digit"):
-        self.message = message
-        super().__init__(self.message)
+class UserAlreadyExist(UserException):
+    def __init__(self, message="User already exist"):
+        self.status = 422
+        super().__init__(message, self.status)
+
+
+class UserValueError(UserException):
+    def __init__(self, message="User value error"):
+        self.status = 400
+        super().__init__(message, self.status)
+
+
+class UserInactive(UserException):
+    def __init__(self, message="Inactive User"):
+        self.status = 400
+        super().__init__(message, self.status)

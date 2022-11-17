@@ -14,3 +14,7 @@ class AuthRepositoryInterface(ABC):
     @abstractmethod
     def find(self, username: str) -> bool:
         pass
+
+    @abstractmethod
+    def active(self, user_id: str) -> bool:
+        pass

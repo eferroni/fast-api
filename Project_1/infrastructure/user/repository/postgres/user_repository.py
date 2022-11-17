@@ -1,5 +1,3 @@
-from sqlalchemy.exc import IntegrityError
-
 from domain.user.entity.user import User
 from domain.user.repository.user_repository_interface import UserRepositoryInterface
 from domain.user.exceptions.user_exceptions import UserNotFound, UserAlreadyExist

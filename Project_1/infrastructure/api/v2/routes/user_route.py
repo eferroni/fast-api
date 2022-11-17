@@ -1,27 +1,14 @@
-import os
 from typing import Optional
 from fastapi import status, HTTPException, APIRouter, Depends
-from dotenv import load_dotenv
 
 from domain.auth.entity.auth import Auth
-from domain.user.exceptions.user_exceptions import UserNotFound
-from infrastructure.user.repository.dict.user_repository import UserRepositoryDict
-from infrastructure.user.repository.postgres.user_repository import UserRepositoryPostgres
-from infrastructure.user.repository.sqlite.user_repository import UserRepositorySqlite
 from usecase.auth.get.get_user_dto import OutputGetUserDto
 from usecase.user.find.find_user_dto import InputFindUserDto, OutputFindUserDto
 from usecase.user.find.find_user_usecase import FindUserUseCase
 from usecase.user.find_all.find_all_user_dto import OutputFindAllUserDto
 from usecase.user.find_all.find_all_user_usecase import FindAllUserUseCase
+from infrastructure.user.repository.repository import user_repository
 
-load_dotenv()
-REPOSITORY = os.environ.get("REPOSITORY")
-if REPOSITORY == 'sqlite':
-    user_repository = UserRepositorySqlite()
-elif REPOSITORY == 'postgresql':
-    user_repository = UserRepositoryPostgres()
-elif REPOSITORY == 'dict':
-    user_repository = UserRepositoryDict()
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -36,9 +23,10 @@ async def find_all_users(user_id: Optional[str] = None,
         use_case = FindAllUserUseCase(user_repository)
         output_dto: list[OutputFindAllUserDto] = use_case.execute(input_dto)
         return output_dto
-    except Exception:
-        raise HTTPException(status_code=500,
-                            detail="Something went wrong :(")
+    except Exception as e:
+        raise HTTPException(
+            status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e.message if hasattr(e, 'message') else "Something went wrong :(")
 
 
 @router.get("/{user_id}")
@@ -48,9 +36,7 @@ async def find_user(user_id: str,
         input_dto: InputFindUserDto = {"id": user_id}
         output_dto: OutputFindUserDto = FindUserUseCase(user_repository).execute(input_dto)
         return output_dto
-    except UserNotFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail='User not found')
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Something went wrong :(")
+    except Exception as e:
+        raise HTTPException(
+            status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e.message if hasattr(e, 'message') else "Something went wrong :(")

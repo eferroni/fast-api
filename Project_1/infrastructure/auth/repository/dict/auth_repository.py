@@ -6,6 +6,11 @@ from domain.user.exceptions.user_exceptions import UserAlreadyExist
 
 
 class AuthRepositoryDict(AuthRepositoryInterface):
+    def active(self, user_id: str) -> bool:
+        if user_id not in USERS:
+            return False
+        return USERS[user_id]['is_active']
+
     def find(self, username: str) -> bool:
         for user_id in USERS:
             if USERS[user_id]['username'] == username:

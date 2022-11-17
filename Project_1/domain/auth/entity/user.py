@@ -14,12 +14,12 @@ class UserProps(TypedDict):
 
 class User(Password):
     def __init__(self, props: UserProps):
+        super().__init__(props.get('hashed_password'))
         self._id = props.get('id')
         self._username = props.get('username')
         self._email = props.get('email')
         self._first_name = props.get('first_name')
         self._last_name = props.get('last_name')
-        super().__init__(props.get('hashed_password'))
 
     @property
     def id(self) -> str:

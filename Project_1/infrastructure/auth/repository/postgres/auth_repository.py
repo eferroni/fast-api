@@ -18,6 +18,12 @@ class AuthRepositoryPostgres(AuthRepositoryInterface):
     def commit(self):
         self.session.commit()
 
+    def active(self, user_id: str) -> bool:
+        user_item = self.session.query(models.Users).filter(models.Users.id == user_id).first()
+        if user_item is None:
+            return False
+        return user_item.is_active
+
     def find(self, username: str) -> bool:
         user_item = self.session.query(models.Users).filter(models.Users.username == username).first()
         if user_item is None:

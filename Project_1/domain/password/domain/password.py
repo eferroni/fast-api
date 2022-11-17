@@ -1,12 +1,11 @@
 from passlib.context import CryptContext
-from domain.user.exceptions.user_exceptions import PasswordPolicy
+from domain.password.exceptions.password_exceptions import PasswordPolicy
 
 
 class Password:
     def __init__(self, hashed_password: str):
         self._hashed_password = hashed_password
         self.bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
     @property
     def hashed_password(self) -> str:

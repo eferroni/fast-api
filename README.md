@@ -84,25 +84,33 @@ Here are routes I already created:
 
 ```
 # choose a repository to use:
+# - mongodb
 # - postgresql
 # - sqlite
 # - dict
-REPOSITORY=postgres
+REPOSITORY=mongodb
 
-#postgres
+# mongo
+MONGO_DB_NAME=books
+MONGO_ATLAS_USERNAME=mongo
+MONGO_ATLAS_PASSWORD=password
+MONGO_URL=mongodb+srv://${MONGO_ATLAS_USERNAME}:${MONGO_ATLAS_PASSWORD}@cluster0.dgilwiw.mongodb.net/?retryWrites=true&w=majority
+
+# postgres
 POSTGRES_DB_NAME=books
 POSTGRES_DB_USER=postgres
 POSTGRES_DB_PASS=password
 POSTGRES_DB_HOST=localhost
 POSTGRES_DB_URL="postgresql://${POSTGRES_DB_USER}:${POSTGRES_DB_PASS}@${POSTGRES_DB_HOST}/${POSTGRES_DB_NAME}"
 
-#sqlite
+# sqlite
 SQLITE_DB_NAME=books.db
 SQLITE_DB_URL="sqlite:///./${SQLITE_DB_NAME}"
 
-# secret key for generate jwt token
-JWT_SECRET_KEY=JKSHdhsdyuashdasydhLDhs8
-```
+# token
+JWT_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+JWT_ALGORITH=HS256
+JWT_EXPIRE_MINUTES=15```
 
 ## Postman Collection:
 FastAPI_Project1.postman_collection.json

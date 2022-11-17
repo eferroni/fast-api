@@ -16,5 +16,6 @@ class LoginUserUseCase:
         auth = Auth(user)
         token = auth.create_access_token()
         return {
-            "token": token,
+            "access_token": token,
+            "token_type": "bearer"
         }

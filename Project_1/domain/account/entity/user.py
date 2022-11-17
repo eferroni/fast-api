@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 from domain.password.domain.password import Password
-from domain.user.exceptions.user_exceptions import PasswordPolicy, UserValueError
+from domain.user.exceptions.user_exceptions import UserValueError
 
 
 class UserProps(TypedDict):
