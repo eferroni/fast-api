@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from domain.auth.entity.user import User
-from domain.user.exceptions.user_exceptions import UserNotFound, UserInactive
+from domain.auth.exceptions.auth_exceptions import AuthUnauthorizedException
 from usecase.auth.get.get_user_dto import OutputGetUserDto
 from infrastructure.auth.repository.repository import auth_repository
 
@@ -36,38 +36,35 @@ class Auth:
         encode.update({"exp": expire})
         return jwt.encode(encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITH)
 
-    @staticmethod
-    def get_current_user(token: str = Depends(oauth2_bearer)) -> OutputGetUserDto:
-        try:
-            payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITH)
-            user_id: str = payload.get("id")
-            username: str = payload.get("sub")
-            if username is None or user_id is None:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="User not found",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
 
-            if auth_repository.active(user_id) is False:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="User not found/inactive",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-
-            return {"id": user_id, "username": username }
-        except ExpiredSignatureError:
+async def get_current_user(token: str = Depends(oauth2_bearer)) -> OutputGetUserDto:
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITH)
+        user_id: str = payload.get("id")
+        username: str = payload.get("sub")
+        if username is None or user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        except JWTError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
+                detail="User not found",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
+        user = auth_repository.authenticate(username)
 
+        return {"id": user.id, "username": user.username, "is_active":  user.is_active}
+    except (AuthUnauthorizedException, ExpiredSignatureError, JWTError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+async def get_current_active_user(current_user: dict = Depends(get_current_user)):
+    if current_user.get('is_active') is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Inactive user",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return current_user

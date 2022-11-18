@@ -1,12 +1,14 @@
-from typing import Optional
-from fastapi import status, HTTPException, APIRouter
+from typing import Optional, Literal
+from fastapi import status, HTTPException, APIRouter, Depends
+
+from infrastructure.api.v1.__shared__.parameters import OutputCommonParametersDto, common_parameters
 from usecase.book.create.create_book_dto import InputCreateBookDto, OutputCreateBookDto
 from usecase.book.create.create_book_usecase import CreateBookUseCase
 from usecase.book.delete.delete_book_dto import InputDeleteBookDto, OutputDeleteBookDto
 from usecase.book.delete.delete_book_usecase import DeleteBookUseCase
 from usecase.book.find.find_book_dto import InputFindBookDto, OutputFindBookDto
 from usecase.book.find.find_book_usecase import FindBookUseCase
-from usecase.book.find_all.find_all_book_dto import OutputFindAllBookDto
+from usecase.book.find_all.find_all_book_dto import OutputFindAllBookDto, InputFindAllBookDto
 from usecase.book.find_all.find_all_book_usecase import FindAllBookUseCase
 from usecase.book.update.update_book_dto import InputUpdateBookDto, OutputUpdateBookDto
 from usecase.book.update.update_book_usecase import UpdateBookUseCase
@@ -19,18 +21,25 @@ router = APIRouter(prefix="/books", tags=["books"])
 
 
 @router.get("/")
-async def find_all_books(book_id: Optional[str] = None):
-    try:
-        input_dto = {}
-        if book_id is not None:
-            input_dto['id'] = book_id
+async def find_all_books(title: Optional[str] = None,
+                         author: Optional[str] = None,
+                         order: Literal['title', 'author'] = 'title',
+                         commons: OutputCommonParametersDto = Depends(common_parameters)):
+    # try:
+        input_dto: InputFindAllBookDto = {
+            'title': title,
+            'author': author,
+            'page': commons.get('page'),
+            'size': commons.get('size'),
+            'order': order
+        }
         use_case = FindAllBookUseCase(book_repository)
-        output_dto: list[OutputFindAllBookDto] = use_case.execute(input_dto)
+        output_dto: OutputFindAllBookDto = use_case.execute(input_dto)
         return output_dto
-    except Exception as e:
-        raise HTTPException(
-            status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=e.message if hasattr(e, 'message') else "Something went wrong :(")
+    # except Exception as e:
+    #     raise HTTPException(
+    #         status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #         detail=e.message if hasattr(e, 'message') else "Something went wrong :(")
 
 
 @router.get("/{book_id}")

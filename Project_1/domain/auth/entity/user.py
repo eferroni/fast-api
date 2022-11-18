@@ -10,6 +10,7 @@ class UserProps(TypedDict):
     first_name: str
     last_name: str
     hashed_password: str
+    is_active: bool
 
 
 class User(Password):
@@ -20,6 +21,7 @@ class User(Password):
         self._email = props.get('email')
         self._first_name = props.get('first_name')
         self._last_name = props.get('last_name')
+        self._is_active = props.get('is_active')
 
     @property
     def id(self) -> str:
@@ -40,3 +42,7 @@ class User(Password):
     @property
     def last_name(self) -> str:
         return self._last_name
+
+    @property
+    def is_active(self) -> bool:
+        return self._is_active

@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "f4b7a986-c7b2-437b-b04b-5b2a090cc1a3",
-		"name": "FastAPI_Project1",
+		"name": "FastAPI_Project1_RESTAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15570202"
 	},
@@ -327,7 +327,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/v2/users/",
+					"raw": "http://localhost:8000/v2/users/?page=1&size=10&order=username",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -337,6 +337,40 @@
 						"v2",
 						"users",
 						""
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "brun",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "ed",
+							"disabled": true
+						},
+						{
+							"key": "first_name",
+							"value": "j",
+							"disabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "do",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "order",
+							"value": "username"
+						}
 					]
 				}
 			},
@@ -447,7 +481,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/v2/books/",
+					"raw": "http://localhost:8000/v2/books/?page=1&size=10&order=title",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -457,6 +491,30 @@
 						"v2",
 						"books",
 						""
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Com",
+							"disabled": true
+						},
+						{
+							"key": "author",
+							"value": "ed",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "order",
+							"value": "title"
+						}
 					]
 				}
 			},

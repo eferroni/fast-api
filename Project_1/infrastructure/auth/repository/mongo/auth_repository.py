@@ -12,13 +12,7 @@ class AuthRepositoryMongo(AuthRepositoryInterface):
         self.db_name = get_database()
         self.collection = self.db_name['users']
 
-    def active(self, user_id: str) -> bool:
-        user_item = self.collection.find_one({'_id': user_id})
-        if user_item is None:
-            return False
-        return user_item.get('is_active')
-
-    def find(self, username: str) -> bool:
+    def exist_username(self, username: str) -> bool:
         user_item = self.collection.find_one({'username': username})
         if user_item is None:
             return False
@@ -51,7 +45,8 @@ class AuthRepositoryMongo(AuthRepositoryInterface):
             'email': user_item.get('email'),
             'first_name': user_item.get('first_name'),
             'last_name': user_item.get('last_name'),
-            'hashed_password': user_item.get('hashed_password')
+            'hashed_password': user_item.get('hashed_password'),
+            'is_active': user_item.get('is_active')
         }
         user = User(props)
         return user

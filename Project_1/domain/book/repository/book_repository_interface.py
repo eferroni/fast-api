@@ -4,11 +4,15 @@ from domain.book.entity.book import Book
 
 class BookRepositoryInterface(ABC):
     @abstractmethod
+    def count(self, book_title: str, book_author: str) -> int:
+        pass
+
+    @abstractmethod
     def find(self, book_id: str) -> Book:
         pass
 
     @abstractmethod
-    def find_all(self, book_id: str = None) -> list[Book]:
+    def find_all(self, title: str, author: str, page: int, size: int, order: str) -> list[Book]:
         pass
 
     @abstractmethod

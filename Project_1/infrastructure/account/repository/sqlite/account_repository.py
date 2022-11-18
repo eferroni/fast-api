@@ -1,24 +1,19 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select, delete, update
 
 from domain.account.repository.account_repository_interface import AccountRepositoryInterface
 from domain.account.entity.user import User, UserProps
-from domain.user.exceptions.user_exceptions import UserAlreadyExist, UserNotFound
+from domain.user.exceptions.user_exceptions import UserNotFound
 from infrastructure.__shared__.repository.sqlite.database import SessionLocal
 import infrastructure.user.repository.sqlite.user_model as models
 
 
 class AccountRepositorySqlite(AccountRepositoryInterface):
-    def __init__(self):
-        self.session = SessionLocal()
-
-    def close(self):
-        self.session.close()
-
-    def commit(self):
-        self.session.commit()
-
     def find(self, user_id: str) -> User:
-        user_item = self.session.query(models.Users).filter(models.Users.id == user_id).first()
+        with SessionLocal() as s:
+            query = s.execute(
+                select(models.Users).where(models.Users.id == user_id)
+            )
+            user_item = query.scalar()
         if user_item is None:
             raise UserNotFound
         props: UserProps = {
@@ -34,21 +29,24 @@ class AccountRepositorySqlite(AccountRepositoryInterface):
         return user
 
     def update(self, user: User) -> None:
-        try:
-            self.session.query(models.Users).filter(models.Users.id == user.id).update(
-                {
-                    "username": user.username,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "hashed_password": user.hashed_password,
-                    "is_active": user.is_active
-                }
+        with SessionLocal() as s:
+            s.execute(
+                update(models.Users).where(
+                    models.Users.id == user.id
+                ).values(
+                    username=user.username,
+                    email=user.email,
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    hashed_password=user.hashed_password,
+                    is_active=user.is_active,
+                )
             )
-            self.commit()
-        except IntegrityError:
-            raise UserAlreadyExist('Username already taken')
+            s.commit()
 
     def delete(self, user: User) -> None:
-        self.session.query(models.Users).filter(models.Users.id == user.id).delete()
-        self.commit()
+        with SessionLocal() as s:
+            s.execute(
+                delete(models.Users).where(models.Users.id == user.id)
+            )
+            s.commit()

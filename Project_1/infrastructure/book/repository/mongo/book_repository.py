@@ -1,3 +1,5 @@
+import re
+
 from pymongo.errors import DuplicateKeyError
 
 from domain.book.entity.book import Book
@@ -11,6 +13,16 @@ class BookRepositoryMongo(BookRepositoryInterface):
         self.db_name = get_database()
         self.collection = self.db_name['books']
 
+    def count(self, book_title: str, book_author: str) -> int:
+        query_filter = {}
+        if book_title is not None:
+            query_filter['title'] = re.compile(book_title, re.IGNORECASE)
+        if book_author is not None:
+            query_filter['author'] = re.compile(book_author, re.IGNORECASE)
+
+        count = self.collection.count_documents(query_filter)
+        return count
+
     def find(self, book_id: str) -> Book:
         book_item = self.collection.find_one({'_id': book_id})
         if book_item is None:
@@ -18,16 +30,18 @@ class BookRepositoryMongo(BookRepositoryInterface):
         book = Book(book_item.get('_id'), book_item.get('title'), book_item.get('author'))
         return book
 
-    def find_all(self, book_id: str = None) -> list[Book]:
-        if book_id is None:
-            books = self.collection.find()
-        else:
-            books = self.collection.find({'_id': book_id})
-        book_list = list()
-        for book_item in books:
-            book = Book(book_item.get('_id'), book_item.get('title'), book_item.get('author'))
-            book_list.append(book)
-        return book_list
+    def find_all(self, title: str, author: str, page: int, size: int, order: str) -> list[Book]:
+        query_filter = {}
+        if title is not None:
+            query_filter['title'] = re.compile(title, re.IGNORECASE)
+        if author is not None:
+            query_filter['author'] = re.compile(author, re.IGNORECASE)
+
+        books = self.collection.find(query_filter).skip(((page-1)*size)).limit(size).sort(order)
+        return [
+            Book(book_item.get('_id'), book_item.get('title'),
+                 book_item.get('author')) for book_item in books
+        ]
 
     def create(self, book: Book) -> None:
         try:

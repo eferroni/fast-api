@@ -4,7 +4,7 @@ from infrastructure.__shared__.repository.sqlite.database import Base, engine
 
 class Users(Base):
     __tablename__ = "users"
-    # __table_args__ = (UniqueConstraint('username', name='_username'),)
+    __table_args__ = (UniqueConstraint('username', name='_username'),)
 
     id = Column(String, primary_key=True)
     username = Column(String)
@@ -16,5 +16,6 @@ class Users(Base):
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username})"
+
 
 Base.metadata.create_all(engine)

@@ -3,15 +3,16 @@
 
 # Project_1 - Clean Architecture API with FastAPI:
 
-A simple books public CRUD API created with Clean Architecture principles, decoupling the adapters from the core domain.
+A simple books public CRUD API created with Clean Architecture principles, decoupling the adapters from the domains.
 
 Adapters:
 - Rest API: created with FastAPI framework.
 - Dictionary Repository: to handle books data.
 - SQLite Repository: to handle books data.
 - PostgreSQL Repository: to handle books data.
+- MongoDB Repository: to handle books data.
 
-Goal: create new adapters, like CLI and MySQL.
+Goal: create new adapters, like GraphQl and MySQL.
 
 ## Unit tests:
 
@@ -19,7 +20,7 @@ unit test were created for:
 - Book entity.
 - Dict Repository.
 
-Goal: create new tests for API, SQLite and Posgres adapters.
+Goal: create new tests for API, SQLite, Postgres and MongoDB adapters.
 
 ## Routes V1:
 
@@ -63,20 +64,20 @@ Here are routes I already created:
 
 |`/books`||||
 |-|-|-|-|
-|**Method**|**Route**|**Description**|
-|GET|`/books/:id`|get one book|
-|GET|`/books`|get all books|
-|DELETE|`/books/:id`|delete one book|
-|PUT|`/books/:id`|update one book|
-|POST|`/books`|create one book|
+|**Method**|**Route**|**Description**|**Query Params**|
+|GET|`/books/:id`|get one book|title, author, page, size, order|
+|GET|`/books`|get all books||
+|DELETE|`/books/:id`|delete one book||
+|PUT|`/books/:id`|update one book||
+|POST|`/books`|create one book||
 
 ### Users (passing a Bearer Token)
 
 |`/users`||||
 |-|-|-|-|
-|**Method**|**Route**|**Description**|
-|GET|`/users/:id`|get one user|
-|GET|`/users`|get all users|
+|**Method**|**Route**|**Description**|**Query Params**|
+|GET|`/users/:id`|get one user||
+|GET|`/users`|get all users|users, email, first_name, last_name, page, size, order|
 
 ## Environment variables:
 
@@ -114,4 +115,4 @@ JWT_EXPIRE_MINUTES=15
 ```
 
 ## Postman Collection:
-FastAPI_Project1.postman_collection.json
+FastAPI_Project1_RESTAPI.postman_collection.json

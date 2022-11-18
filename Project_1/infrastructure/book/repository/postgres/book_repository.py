@@ -1,4 +1,4 @@
-from sqlalchemy import update, delete
+from sqlalchemy import update, delete, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 from domain.book.entity.book import Book
@@ -9,6 +9,20 @@ import infrastructure.book.repository.postgres.book_model as models
 
 
 class BookRepositoryPostgres(BookRepositoryInterface):
+    def count(self, book_title: str, book_author: str) -> int:
+        with SessionLocal() as s:
+            query_filter = list()
+            if book_title is not None:
+                query_filter.append(models.Books.title.ilike(f'%{book_title}%'))
+            if book_author is not None:
+                query_filter.append(models.Books.author.ilike(f'%{book_author}%'))
+
+            count = s.execute(
+                select(func.count()).select_from(models.Books)
+                .where(*query_filter)
+            ).scalar()
+        return count
+
     def find(self, book_id: str) -> Book:
         with SessionLocal() as s:
             query = s.execute(
@@ -20,16 +34,19 @@ class BookRepositoryPostgres(BookRepositoryInterface):
         book = Book(book_item.id, book_item.title, book_item.author)
         return book
 
-    def find_all(self, book_id: str = None) -> list[Book]:
+    def find_all(self, title, author, page, size, order) -> list[Book]:
         with SessionLocal() as s:
-            if book_id is None:
-                query = s.execute(
-                    select(models.Books)
-                )
-            else:
-                query = s.execute(
-                    select(models.Books).where(models.Books.id == book_id)
-                )
+            query_filter = list()
+            if title is not None:
+                query_filter.append(models.Books.title.ilike(f'%{title}%'))
+            if author is not None:
+                query_filter.append(models.Books.author.ilike(f'%{author}%'))
+
+            query = s.execute(
+                select(models.Books).where(*query_filter)
+                .offset(((page-1)*size)).limit(size).order_by(order)
+            )
+
             books = query.scalars().all()
         book_list = list()
         for book_item in books:

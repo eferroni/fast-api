@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from domain.auth.exceptions.auth_exceptions import AuthUnauthorizedException
@@ -9,45 +10,39 @@ import infrastructure.user.repository.postgres.user_model as models
 
 
 class AuthRepositoryPostgres(AuthRepositoryInterface):
-    def __init__(self):
-        self.session = SessionLocal()
-
-    def close(self):
-        self.session.close()
-
-    def commit(self):
-        self.session.commit()
-
-    def active(self, user_id: str) -> bool:
-        user_item = self.session.query(models.Users).filter(models.Users.id == user_id).first()
+    def exist_username(self, username: str) -> bool:
+        with SessionLocal() as s:
+            query = s.execute(
+                select(models.Users).where(models.Users.username == username)
+            )
+            user_item = query.scalar()
         if user_item is None:
             return False
-        return user_item.is_active
-
-    def find(self, username: str) -> bool:
-        user_item = self.session.query(models.Users).filter(models.Users.username == username).first()
-        if user_item is None:
-            return False
-        return True
+        return False
 
     def create(self, user: User) -> None:
         try:
-            user_model = models.Users()
-            user_model.id = user.id
-            user_model.username = user.username
-            user_model.email = user.email
-            user_model.first_name = user.first_name
-            user_model.last_name = user.last_name
-            user_model.hashed_password = user.hashed_password
-            user_model.is_active = True
+            with SessionLocal() as s:
+                user_model = models.Users()
+                user_model.id = user.id
+                user_model.username = user.username
+                user_model.email = user.email
+                user_model.first_name = user.first_name
+                user_model.last_name = user.last_name
+                user_model.hashed_password = user.hashed_password
+                user_model.is_active = True
 
-            self.session.add(user_model)
-            self.commit()
+                s.add(user_model)
+                s.commit()
         except IntegrityError:
-            raise UserAlreadyExist('User Id already exist')
+            raise UserAlreadyExist('User already exist')
 
     def authenticate(self, username: str) -> User:
-        user_item = self.session.query(models.Users).filter(models.Users.username == username).first()
+        with SessionLocal() as s:
+            query = s.execute(
+                select(models.Users).where(models.Users.username == username)
+            )
+            user_item = query.scalar()
         if user_item is None:
             raise AuthUnauthorizedException
         props = {
@@ -56,7 +51,8 @@ class AuthRepositoryPostgres(AuthRepositoryInterface):
             'email': user_item.email,
             'first_name': user_item.first_name,
             'last_name': user_item.last_name,
-            'hashed_password': user_item.hashed_password
+            'hashed_password': user_item.hashed_password,
+            'is_active': user_item.is_active
         }
         user = User(props)
         return user

@@ -1,6 +1,6 @@
 from fastapi import status, HTTPException, APIRouter, Depends
 
-from domain.auth.entity.auth import Auth
+from domain.auth.entity.auth import get_current_user
 from domain.auth.exceptions.auth_exceptions import AuthUnauthorizedException
 from infrastructure.api.v2.validator.account.update_account_validator import UpdateAccountValidator
 from infrastructure.api.v2.validator.account.update_account_password_validator import UpdateAccountPasswordValidator
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/account", tags=["account"])
 @router.put("/{user_id}")
 async def update_user_account(user_id: str,
                               user: UpdateAccountValidator,
-                              user_auth: OutputGetUserDto = Depends(Auth.get_current_user)):
+                              user_auth: OutputGetUserDto = Depends(get_current_user)):
     try:
         if user_id != user_auth.get('id'):
             raise AuthUnauthorizedException
@@ -42,7 +42,7 @@ async def update_user_account(user_id: str,
 @router.put("/{user_id}/password", status_code=status.HTTP_204_NO_CONTENT)
 async def update_user_account_password(user_id: str,
                                        user: UpdateAccountPasswordValidator,
-                                       user_auth: OutputGetUserDto = Depends(Auth.get_current_user)):
+                                       user_auth: OutputGetUserDto = Depends(get_current_user)):
     try:
         if user_id != user_auth.get('id'):
             raise AuthUnauthorizedException
@@ -62,7 +62,7 @@ async def update_user_account_password(user_id: str,
 
 @router.put("/{user_id}/activate", status_code=status.HTTP_204_NO_CONTENT)
 async def activate_user_account(user_id: str,
-                                user_auth: OutputGetUserDto = Depends(Auth.get_current_user)):
+                                user_auth: OutputGetUserDto = Depends(get_current_user)):
     try:
         if user_id != user_auth.get('id'):
             raise AuthUnauthorizedException
@@ -77,7 +77,7 @@ async def activate_user_account(user_id: str,
 
 @router.put("/{user_id}/deactivate", status_code=status.HTTP_204_NO_CONTENT)
 async def deactivate_user_account(user_id: str,
-                                  user_auth: OutputGetUserDto = Depends(Auth.get_current_user)):
+                                  user_auth: OutputGetUserDto = Depends(get_current_user)):
     try:
         if user_id != user_auth.get('id'):
             raise AuthUnauthorizedException
@@ -92,7 +92,7 @@ async def deactivate_user_account(user_id: str,
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_account(user_id: str,
-                              user_auth: OutputGetUserDto = Depends(Auth.get_current_user)):
+                              user_auth: OutputGetUserDto = Depends(get_current_user)):
     try:
         if user_id != user_auth.get('id'):
             raise AuthUnauthorizedException
