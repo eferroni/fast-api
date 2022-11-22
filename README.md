@@ -13,7 +13,7 @@ Adapters:
 - PostgreSQL Repository: to handle books data using sqlalchemy.
 - MongoDB Repository: to handle books data using pymongo.
 
-Goal: create new adapters, like GraphQl and MySQL.
+Goal: create new adapters, for JSON Server and MySQL.
 
 ## Unit tests:
 
