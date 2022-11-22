@@ -44,16 +44,16 @@ Here are routes I already created:
 
 ### Auth
 
-|`/auth`||||
-|-|-|-|-|
+|`/auth`|||
+|-|-|-|
 |**Method**|**Route**|**Description**|
 |POST|`/auth/create`|create a user|
 |POST|`/auth/login`|login - get a token|
 
 ### Account (passing a Bearer Token)
 
-|`/account`||||
-|-|-|-|-|
+|`/account`|||
+|-|-|-|
 |**Method**|**Route**|**Description**|
 |PUT|`/account/:id`|update account|
 |PUT|`/account/:id/password`|change password|
@@ -63,8 +63,8 @@ Here are routes I already created:
 
 ### Books (passing a Bearer Token)
 
-|`/books`||||
-|-|-|-|-|
+|`/books`|||
+|-|-|-|
 |**Method**|**Route**|**Description**|**Query Params**|
 |GET|`/books/:id`|get one book|title, author, page, size, order|
 |GET|`/books`|get all books||
@@ -86,20 +86,33 @@ Here are routes I already created:
 book(bookId:ID!)
 
 books(title: String = null, author: String = null, size: Int! = 10, page: Int! = 1, order: String! = "title")
+
 login(username: String!, password: String!)
+
 user(userId: String!)
+
 users(username: String = null, email: String = null, firstName: String = null, lastName: String = null, page: Int! = 1, size: Int! = 10, order: String! = "username")
+
 
 ### Mutation
 createBook(title: String!, author: String!)
+
 updateBook(bookId: ID!, title: String!, author: String!)
+
 deleteBook(bookId: ID!)
+
 createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!)
+
 updateAccount(userId: String!, email: String!, firstName: String!, lastName: String!)
+
 updatePassword(userId: String!, username: String!, password: String!, newPassword: String!)
+
 activateAccount(userId: String!)
+
 deactivateAccount(userId: String!)
+
 deleteAccount(userId: String!)
+
 
 ## Environment variables:
 
