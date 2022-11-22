@@ -29,8 +29,8 @@ Here are routes I already created:
 
 ### Books
 
-|`/books`||||
-|-|-|-|-|
+|`/books`|||
+|-|-|-|
 |**Method**|**Route**|**Description**|
 |GET|`/books/:id`|get one book|
 |GET|`/books`|get all books|
@@ -84,6 +84,7 @@ Here are routes I already created:
 
 ### Query
 book(bookId:ID!)
+
 books(title: String = null, author: String = null, size: Int! = 10, page: Int! = 1, order: String! = "title")
 login(username: String!, password: String!)
 user(userId: String!)
