@@ -1,9 +1,12 @@
 ### run:
 uvicorn infrastructure.api.main:app --reload
+
 uvicorn infrastructure.graphql.main:app --reload
+
 
 ### access to rest api swagger:
 http://localhost:8000/docs#/
+
 
 ### access to graphiql:
 http://localhost:8000/graphql/
