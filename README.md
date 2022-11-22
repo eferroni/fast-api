@@ -7,10 +7,11 @@ A simple books public CRUD API created with Clean Architecture principles, decou
 
 Adapters:
 - Rest API: created with FastAPI framework.
+- GraphQL: created with FastAPI framework and strawberry.
 - Dictionary Repository: to handle books data.
-- SQLite Repository: to handle books data.
-- PostgreSQL Repository: to handle books data.
-- MongoDB Repository: to handle books data.
+- SQLite Repository: to handle books data using sqlalchemy.
+- PostgreSQL Repository: to handle books data using sqlalchemy.
+- MongoDB Repository: to handle books data using pymongo.
 
 Goal: create new adapters, like GraphQl and MySQL.
 
@@ -22,7 +23,7 @@ unit test were created for:
 
 Goal: create new tests for API, SQLite, Postgres and MongoDB adapters.
 
-## Routes V1:
+## Rest API Routes V1:
 
 Here are routes I already created:
 
@@ -37,7 +38,7 @@ Here are routes I already created:
 |PUT|`/books/:id`|update one book|
 |POST|`/books`|create one book|
 
-## Routes V2:
+## Rest API Routes V2:
 
 Here are routes I already created:
 
@@ -78,6 +79,26 @@ Here are routes I already created:
 |**Method**|**Route**|**Description**|**Query Params**|
 |GET|`/users/:id`|get one user||
 |GET|`/users`|get all users|users, email, first_name, last_name, page, size, order|
+
+## GraphQL Schemas:
+
+### Query
+book(bookId:ID!)
+books(title: String = null, author: String = null, size: Int! = 10, page: Int! = 1, order: String! = "title")
+login(username: String!, password: String!)
+user(userId: String!)
+users(username: String = null, email: String = null, firstName: String = null, lastName: String = null, page: Int! = 1, size: Int! = 10, order: String! = "username")
+
+### Mutation
+createBook(title: String!, author: String!)
+updateBook(bookId: ID!, title: String!, author: String!)
+deleteBook(bookId: ID!)
+createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!)
+updateAccount(userId: String!, email: String!, firstName: String!, lastName: String!)
+updatePassword(userId: String!, username: String!, password: String!, newPassword: String!)
+activateAccount(userId: String!)
+deactivateAccount(userId: String!)
+deleteAccount(userId: String!)
 
 ## Environment variables:
 

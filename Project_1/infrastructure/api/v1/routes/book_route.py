@@ -25,7 +25,7 @@ async def find_all_books(title: Optional[str] = None,
                          author: Optional[str] = None,
                          order: Literal['title', 'author'] = 'title',
                          commons: OutputCommonParametersDto = Depends(common_parameters)):
-    # try:
+    try:
         input_dto: InputFindAllBookDto = {
             'title': title,
             'author': author,
@@ -36,10 +36,10 @@ async def find_all_books(title: Optional[str] = None,
         use_case = FindAllBookUseCase(book_repository)
         output_dto: OutputFindAllBookDto = use_case.execute(input_dto)
         return output_dto
-    # except Exception as e:
-    #     raise HTTPException(
-    #         status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #         detail=e.message if hasattr(e, 'message') else "Something went wrong :(")
+    except Exception as e:
+        raise HTTPException(
+            status_code=e.status if hasattr(e, 'status') else status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=e.message if hasattr(e, 'message') else "Something went wrong :(")
 
 
 @router.get("/{book_id}")
